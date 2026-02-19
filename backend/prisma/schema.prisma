@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String
+  orders   Order[]
+}
+
+model ProductStock {
+  id        Int      @id @default(autoincrement())
+  productId Int      @unique // ID from external API
+  quantity  Int      @default(100) // Matches DEFAULT_STOCK constant in backend/src/modules/products/constants.ts
+}
+
+model Order {
+  id            Int         @id @default(autoincrement())
+  userId        Int?
+  user          User?       @relation(fields: [userId], references: [id])
+  totalAmount   Decimal
+  status        String      @default("PENDING") // PENDING, COMPLETED, CANCELLED
+  paymentMethod String
+  createdAt     DateTime    @default(now())
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id          Int     @id @default(autoincrement())
+  orderId     Int
+  order       Order   @relation(fields: [orderId], references: [id])
+  productId   Int     // External ID
+  productName String
+  price       Decimal
+  quantity    Int
+}

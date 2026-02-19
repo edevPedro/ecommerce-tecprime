@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+
+  /* Neubrutalist Card */
+  .neu-card {
+    @apply bg-white border-2 border-black rounded-xl p-6 relative transition-all duration-200;
+    box-shadow: 4px 4px 0px 0px #000;
+  }
+
+  .neu-card:hover {
+    @apply -translate-y-1 -translate-x-1;
+    box-shadow: 6px 6px 0px 0px #000;
+  }
+
+  /* Neubrutalist Button */
+  /* Default button is now Orange (Brand Primary) */
+  .neu-btn {
+    @apply bg-brand-blue text-white font-bold uppercase tracking-wide px-6 py-3 rounded-lg border-2 border-black transition-all duration-150 inline-flex items-center justify-center gap-2;
+    box-shadow: 4px 4px 0px 0px #000;
+  }
+
+  .neu-btn:hover {
+    @apply bg-brand-black text-white -translate-y-[2px] -translate-x-[2px];
+    box-shadow: 6px 6px 0px 0px #000;
+  }
+
+  .neu-btn:active {
+    @apply translate-y-[2px] translate-x-[2px];
+    box-shadow: none;
+  }
+
+  /* Primary Action: Black background, White text */
+  .neu-btn-primary {
+    @apply bg-brand-black text-white;
+  }
+
+  .neu-btn-primary:hover {
+    @apply bg-brand-blue text-white;
+  }
+
+  /* Secondary Action: White/Gray background */
+  .neu-btn-secondary {
+    @apply bg-brand-gray text-white;
+  }
+
+  .neu-btn-secondary:hover {
+    @apply bg-white;
+  }
+
+  .neu-btn-outline {
+    @apply bg-white;
+  }
+
+  /* Neubrutalist Input */
+  .neu-input {
+    @apply w-full bg-white border-2 border-black rounded-lg px-4 py-3 font-medium placeholder-slate-400 focus:outline-none transition-all;
+    box-shadow: 2px 2px 0px 0px #000;
+  }
+
+  .neu-input:focus {
+    @apply bg-brand-gray;
+    box-shadow: 4px 4px 0px 0px #000;
+  }
+
+  /* Neubrutalist Badge */
+  .neu-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border-2 border-black bg-brand-orange text-black uppercase tracking-wider;
+    box-shadow: 2px 2px 0px 0px #000;
+  }
+}
+
+body {
+  background-color: #f8f9fa;
+  color: #1A1A1A;
+}
