@@ -1,181 +1,201 @@
-# TecPrime Technical Challenge
+# Desafio Técnico TecPrime
 
-A full-stack e-commerce application demonstrating modern architectural practices, clean code, and robust system integration.
+Uma aplicação full-stack de e-commerce demonstrando práticas arquiteturais modernas, código limpo e integração robusta entre sistemas.
 
-## 🏗 Architecture
+## 🏗 Arquitetura
 
-This project follows a **Monorepo** structure containing:
+Este projeto segue uma estrutura de **Monorepo**, contendo:
 
-- **Backend:** NestJS (Node.js) with BullMQ (Redis)
-- **Frontend:** React (Vite + TypeScript)
-- **Database:** PostgreSQL
-- **Orchestration:** Docker Compose
+* **Backend:** NestJS (Node.js) com BullMQ (Redis)
+* **Frontend:** React (Vite + TypeScript)
+* **Banco de Dados:** PostgreSQL
+* **Orquestração:** Docker Compose
 
-### Key Decisions & Patterns
+### Principais Decisões & Padrões
 
 #### Backend (NestJS)
 
-- **Layered Architecture:** Strict separation of concerns (Controllers -> Services -> Repositories/Adapters).
-- **Adapter Pattern:** Used in the `ProductsModule` to normalize data from the external API (DummyJSON) into our internal domain format.
-- **Async Queue (Redis + BullMQ):** Orders are processed asynchronously to simulate high-concurrency handling. The API responds immediately with a Job ID, while a background processor handles the transaction.
-- **Transactional Consistency:** The `OrdersProcessor` uses Prisma Interactive Transactions to ensure that order creation and stock decrements happen atomically.
-- **DTO Validation:** Strict input validation using `class-validator` ensures data integrity before it reaches business logic.
-- **JWT Authentication:** Secure stateless authentication for protecting sensitive endpoints.
-- **Swagger Documentation:** Fully documented API endpoints using `@nestjs/swagger`, available at `/api`.
+* **Arquitetura em Camadas:** Separação rigorosa de responsabilidades (Controllers → Services → Repositories/Adapters).
+* **Adapter Pattern:** Utilizado no `ProductsModule` para normalizar dados da API externa (DummyJSON) para o formato do nosso domínio interno.
+* **Fila Assíncrona (Redis + BullMQ):** Pedidos são processados de forma assíncrona para simular alta concorrência. A API responde imediatamente com um ID do Job, enquanto um processador em segundo plano realiza a transação.
+* **Consistência Transacional:** O `OrdersProcessor` utiliza Transações Interativas do Prisma para garantir que a criação do pedido e a baixa de estoque ocorram de forma atômica.
+* **Validação com DTO:** Validação rigorosa de entrada utilizando `class-validator`, garantindo integridade dos dados antes de chegarem à lógica de negócio.
+* **Autenticação JWT:** Autenticação segura e stateless para proteger endpoints sensíveis.
+* **Documentação Swagger:** Endpoints totalmente documentados com `@nestjs/swagger`, disponíveis em `/api`.
 
 #### Frontend (React)
 
-- **Deferred Login:** Users can browse and add items to the cart freely. Authentication is only required at the **Checkout** step.
-- **Modern UI:** Styled with TailwindCSS, featuring a clean, tech-focused design inspired by TecPrime's branding.
-- **Context API:** Used for global state management (`CartContext`, `AuthContext`).
-- **Interceptors:** Axios interceptors automatically attach JWT tokens to authenticated requests.
-- **Async Order Handling:** The frontend gracefully handles the async order creation process, displaying a "Processing" state and polling/waiting for the final order confirmation.
+* **Login Postergado (Deferred Login):** Usuários podem navegar e adicionar itens ao carrinho livremente. A autenticação só é exigida no momento do **Checkout**.
+* **UI Moderna:** Estilizado com TailwindCSS, com design limpo e tecnológico inspirado na identidade da TecPrime.
+* **Context API:** Utilizada para gerenciamento global de estado (`CartContext`, `AuthContext`).
+* **Interceptors:** Interceptadores do Axios anexando automaticamente o token JWT às requisições autenticadas.
+* **Processamento Assíncrono de Pedidos:** O frontend lida de forma elegante com a criação assíncrona de pedidos, exibindo um estado de "Processando" e realizando polling/espera até a confirmação final.
 
-#### Database (PostgreSQL)
+#### Banco de Dados (PostgreSQL)
 
-- **Prisma ORM:** Provides type-safe database access and automated migrations.
-- **Hybrid Data Strategy:**
-  - **Products:** Fetched from `dummyjson.com` (read-only source of truth for details & reviews).
-  - **Stock:** Managed locally in `ProductStock` table (writeable source of truth for inventory).
-  - **Orders:** Fully managed locally with relational integrity.
+* **Prisma ORM:** Fornece acesso tipado ao banco de dados e migrações automatizadas.
+* **Estratégia de Dados Híbrida:**
 
-## 🚀 Getting Started
+  * **Produtos:** Obtidos de `dummyjson.com` (fonte de verdade somente leitura para detalhes e avaliações).
+  * **Estoque:** Gerenciado localmente na tabela `ProductStock` (fonte de verdade gravável para inventário).
+  * **Pedidos:** Totalmente gerenciados localmente com integridade relacional.
 
-### Prerequisites
+---
 
-- Docker & Docker Compose
+## 🚀 Começando
 
-### Quick Start (Docker)
+### Pré-requisitos
 
-The easiest way to run the entire stack is with Docker Compose.
+* Docker & Docker Compose
 
-1. **Clone the repository:**
+### Início Rápido (Docker)
 
-   ```bash
-   git clone <repo-url>
-   cd challenge-tecprime
-   ```
+A maneira mais simples de rodar toda a stack é utilizando Docker Compose.
 
-2. **Start the Application:**
-
-   ```bash
-   docker-compose up -d --build
-   ```
-
-3. **Access the App:**
-   - **Frontend:** `http://localhost`
-   - **Backend API:** `http://localhost:3000`
-   - **Swagger Docs:** `http://localhost:3000/api`
-
-### 🛡 Admin & Logs Access
-
-The application includes a restricted area for viewing system logs and administrative functions. The system tracks critical events including:
-
-- User Authentication (Login/Logout)
-- Shopping Cart Activities (Add/Remove items)
-- Order Processing
-
-- **URL:** `http://localhost/logs`
-- **Secret Key:** `secret` (Default)
-
-> **Note:** The secret key can be configured via the `LOGS_SECRET` environment variable in the backend.
-
-> **Note:** If you encounter database connection issues on the first run, try resetting the volumes:
->
-> ```bash
-> docker-compose down -v
-> docker-compose up -d --build
-> ```
-
-### Manual Setup (Development)
-
-If you prefer to run services individually:
-
-1. **Start Infrastructure (PostgreSQL & Redis):**
-
-   ```bash
-   docker-compose up -d postgres redis
-   ```
-
-2. **Backend Setup:**
-
-   ```bash
-   cd backend
-   cp .env.example .env # Copy environment variables
-   npm install
-   npx prisma migrate dev --name init # Run database migrations
-   npm run start:dev
-   ```
-
-3. **Frontend Setup:**
-
-   ```bash
-   cd ../frontend
-   npm install
-   npm run dev
-   ```
-
-## 🧪 Testing
-
-### Running Tests with Docker (Recommended)
-
-You can run both backend and frontend tests using Docker profiles without installing dependencies locally.
+1. **Clone o repositório:**
 
 ```bash
-# Run backend tests
+git clone <repo-url>
+cd challenge-tecprime
+```
+
+2. **Inicie a aplicação:**
+
+```bash
+docker-compose up -d --build
+```
+
+3. **Acesse a aplicação:**
+
+* **Frontend:** `http://localhost`
+* **Backend API:** `http://localhost:3000`
+* **Documentação Swagger:** `http://localhost:3000/api`
+
+---
+
+### 🛡 Acesso Admin & Logs
+
+A aplicação inclui uma área restrita para visualização de logs do sistema e funções administrativas. O sistema rastreia eventos críticos, incluindo:
+
+* Autenticação de Usuário (Login/Logout)
+
+* Atividades do Carrinho (Adicionar/Remover itens)
+
+* Processamento de Pedidos
+
+* **URL:** `http://localhost/logs`
+
+* **Chave Secreta:** `secret` (padrão)
+
+> **Observação:** A chave secreta pode ser configurada pela variável de ambiente `LOGS_SECRET` no backend.
+
+> **Observação:** Se ocorrerem problemas de conexão com o banco na primeira execução, tente resetar os volumes:
+
+```bash
+docker-compose down -v
+docker-compose up -d --build
+```
+
+---
+
+## ⚙ Configuração Manual (Desenvolvimento)
+
+Se preferir rodar os serviços individualmente:
+
+### 1. Inicie a infraestrutura (PostgreSQL & Redis):
+
+```bash
+docker-compose up -d postgres redis
+```
+
+### 2. Backend:
+
+```bash
+cd backend
+cp .env.example .env
+npm install
+npx prisma migrate dev --name init
+npm run start:dev
+```
+
+### 3. Frontend:
+
+```bash
+cd ../frontend
+npm install
+npm run dev
+```
+
+---
+
+## 🧪 Testes
+
+### Rodando testes com Docker (Recomendado)
+
+Você pode executar testes do backend e frontend usando profiles do Docker, sem instalar dependências localmente.
+
+```bash
+# Testes do backend
 docker-compose --profile test run backend-tests
 
-# Run frontend tests
+# Testes do frontend
 docker-compose --profile test run frontend-tests
 ```
 
-### Manual Testing
+### Testes Manuais
 
 **Backend:**
+
 ```bash
 cd backend
 npm run test
 ```
 
 **Frontend:**
+
 ```bash
 cd frontend
 npm run test
 ```
 
-## 🔮 Melhorias que faria se tivesse mais tempo
+---
 
-- **End-to-End Testing (E2E):** Implement Cypress or Playwright tests to simulate full user journeys (Login -> Cart -> Checkout).
-- **Enhance Docker Logs:** Add log rotation, filtering by service/level, and persistent storage outside the container.
-- **CI/CD Pipeline:** Set up GitHub Actions to automate linting, testing, and deployment.
-- **Advanced Monitoring:** Integrate a real monitoring solution like Prometheus + Grafana instead of a custom log reader.
-- **Stock Reservations:** Implement temporary stock holding when items are added to the cart (with expiry) to prevent overselling during checkout.
-- **Payment Gateway Integration:** Replace the mock payment logic with a real provider like Stripe or Pagar.me.
-- **Mobile Responsiveness:** Further polish the UI for a perfect experience on all device sizes.
+## 🔮 Melhorias que eu implementaria com mais tempo
 
-
-## 🛠 Tech Stack
-
-- **Frameworks:** NestJS, React
-- **Language:** TypeScript
-- **Database:** PostgreSQL
-- **Queue:** Redis + BullMQ
-- **ORM:** Prisma
-- **Styling:** TailwindCSS
-- **Tools:** Docker, Vite, Axios, Passport (JWT), Swagger
-
-## 📝 Differentials Implemented
-
-- [x] **Authentication (JWT)**
-- [x] **Transactional Stock Control**
-- [x] **Async Queue Processing (Redis)**
-- [x] **Docker / Docker Compose**
-- [x] **Layered Architecture**
-- [x] **Structured Logs & Admin Panel**
-- [x] **Product Reviews Integration**
-- [x] **Swagger API Documentation**
-- [x] **Automated Database Migrations**
+* **Testes End-to-End (E2E):** Implementar Cypress ou Playwright para simular jornadas completas (Login → Carrinho → Checkout).
+* **Melhoria nos Logs Docker:** Adicionar rotação de logs, filtros por serviço/nível e armazenamento persistente fora do container.
+* **Pipeline CI/CD:** Configurar GitHub Actions para automatizar lint, testes e deploy.
+* **Monitoramento Avançado:** Integrar solução real de monitoramento como Prometheus + Grafana em vez de um leitor de logs customizado.
+* **Reserva de Estoque:** Implementar retenção temporária de estoque ao adicionar itens ao carrinho (com expiração) para evitar overselling.
+* **Integração com Gateway de Pagamento:** Substituir lógica mock por um provedor real como Stripe ou Pagar.me.
+* **Responsividade Mobile:** Aprimorar a interface para experiência perfeita em todos os tamanhos de tela.
 
 ---
 
-_Developed with <3 for the TecPrime Technical Challenge._
+## 🛠 Stack Tecnológica
+
+* **Frameworks:** NestJS, React
+* **Linguagem:** TypeScript
+* **Banco de Dados:** PostgreSQL
+* **Fila:** Redis + BullMQ
+* **ORM:** Prisma
+* **Estilização:** TailwindCSS
+* **Ferramentas:** Docker, Vite, Axios, Passport (JWT), Swagger
+
+---
+
+## 📝 Diferenciais Implementados
+
+* [x] Autenticação (JWT)
+* [x] Controle Transacional de Estoque
+* [x] Processamento Assíncrono com Fila (Redis)
+* [x] Docker / Docker Compose
+* [x] Arquitetura em Camadas
+* [x] Logs Estruturados & Painel Admin
+* [x] Integração de Avaliações de Produtos
+* [x] Documentação de API com Swagger
+* [x] Migrações Automatizadas de Banco de Dados
+
+---
+
+*Desenvolvido com <3 para o Desafio Técnico TecPrime.*
