@@ -167,7 +167,7 @@ npm run test
 * **Pipeline CI/CD:** Configurar GitHub Actions para automatizar lint, testes e deploy.
 * **Monitoramento Avançado:** Integrar solução real de monitoramento como Prometheus + Grafana em vez de um leitor de logs customizado.
 * **Reserva de Estoque:** Implementar retenção temporária de estoque ao adicionar itens ao carrinho (com expiração) para evitar overselling.
-* **Integração com Gateway de Pagamento:** Substituir lógica mock por um provedor real como Stripe ou Pagar.me.
+* **Integração com Gateway de Pagamento:** Substituir lógica mock por um provedor real como Abacatepay ou Pagar.me.
 * **Responsividade Mobile:** Aprimorar a interface para experiência perfeita em todos os tamanhos de tela.
 
 ---
