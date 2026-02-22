@@ -169,6 +169,7 @@ npm run test
 * **Reserva de Estoque:** Implementar retenção temporária de estoque ao adicionar itens ao carrinho (com expiração) para evitar overselling.
 * **Integração com Gateway de Pagamento:** Substituir lógica mock por um provedor real como Abacatepay ou Pagar.me.
 * **Responsividade Mobile:** Aprimorar a interface para experiência perfeita em todos os tamanhos de tela.
+* **Componentes:** Melhorar e organizar componentes e criar o system design do projeto. 
 
 ---
 
